@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+
+    <script>
+
+        const SUITS = '♠♥♦♣';
+        const NAMES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+        const toName = karte => karte.slice(0, -1);
+        const toSuit = karte => karte.slice(-1);
+
+        /*      console.log(toName('9♣'));
+                console.log(toName('10♥'));
+                console.log(toName('Q♥'));
+                console.log(toSuit('9♣'));  */
+
+        const isValidCard = karte =>
+            NAMES.includes(toName(karte)) && SUITS.includes(toSuit(karte));
+
+        //console.log(isValidCard('K♠'));
+
+        const isValidHand2 = handKarten =>
+            handKarten.length === 5 && handKarten.every(isValidCard);
+
+        const karteWert = karte =>
+            NAMES.indexOf(toName(karte)) * SUITS.length + SUITS.indexOf(toSuit(karte));
+
+        const compareCards = (a, b) =>
+            karteWert(a) - karteWert(b);
+
+        const sortHand = hand => {
+            return hand.slice().sort(compareCards);
+        }
+
+        const isFlush = hand =>
+            isValidHand(hand) && hand.every(element => toSuit(element) === toSuit(hand[0]));
+
+        //console.log(isFlush(['7♥', '2♥', 'Q♥', '10♥', '5♥']))
+        //console.log(isFlush(['7♥', '2♥', 'Q♥', '10♣', '5♥']))
+
+        const isStraight = karten => {
+
+            if (!isValidHand(karten)) return false;
+
+            const straightNumArray = karten.map(element => toName(element)).sort((a, b) => NAMES.indexOf(a) - NAMES.indexOf(b)).join(',');
+            return NAMES.join(',').includes(straightNumArray);
+        }
+
+
+
+        const isStraightFlush = karten =>
+            (isFlush(karten) && isStraight(karten));
+        // console.log( isStraightFlush(['5♥', '6♥', '7♥', '8♥', '9♥']));
+        // console.log( isStraightFlush(['5♣', '6♥', '7♥', '8♥', '9♥']));
+        //console.log( isStraightFlush(['6♣', '6♥', '7♥', '8♥', '9♥']));
+
+        const isRoyalFlush = kartenRoyal =>
+            isStraightFlush(kartenRoyal) && ['10', 'J', 'Q', 'K', 'A'].every(name => kartenRoyal.map(toName).includes(name));
+
+        // console.log(isRoyalFlush(['10♥', 'J♥', 'Q♥', 'K♣', 'A♥']));
+        // console.log(isRoyalFlush(['K♥', 'A♥', 'Q♥', '10♥', 'J♥']));
+
+    </script>
+</body>
+
+</html>
